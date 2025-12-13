@@ -1,15 +1,49 @@
 {
-  description = "A very basic flake";
+  description = "My Modular NixOS Configuration";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+
+    # Add Home Manager
+    home-manager.url = "github:nix-community/home-manager/release-24.11";
+    home-manager.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { self, nixpkgs }: {
+  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, ... }@inputs: 
+  let
+    system = "x86_64-linux";
+    pkgs = nixpkgs.legacyPackages.${system};
+    
+    # Define unstable pkgs here so it's available everywhere
+    pkgs-unstable = import nixpkgs-unstable {
+      inherit system;
+      config.allowUnfree = true;
+    };
+  in {
+    nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
+      inherit system;
+      
+      # Pass inputs (like pkgs-unstable) to all modules
+      specialArgs = { inherit inputs pkgs-unstable; };
 
-    packages.x86_64-linux.hello = nixpkgs.legacyPackages.x86_64-linux.hello;
+      modules = [
+        # Your System Config
+        ./hosts/default/configuration.nix
 
-    packages.x86_64-linux.default = self.packages.x86_64-linux.hello;
-
+        # Home Manager Module
+        home-manager.nixosModules.home-manager
+        {
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          
+          # Pass arguments to Home Manager too
+          home-manager.extraSpecialArgs = { inherit inputs pkgs-unstable; };
+          
+          # Where your user config lives
+          home-manager.users.shyam = import ./home/default/home.nix;
+        }
+      ];
+    };
   };
 }
