@@ -6,6 +6,7 @@
       ./hardware-configuration.nix # Copy this from /etc/nixos/
       ../../modules/sunshine.nix   # Relative path to your modules
       ../../modules/steam.nix
+      ../../modules/1password.nix
     ];
 
   # --- Boot & Hardware ---
