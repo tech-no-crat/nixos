@@ -10,9 +10,12 @@
     ];
 
   # --- Boot & Hardware ---
+  hardware.graphics.enable = true;
+  hardware.enableRedistributableFirmware = true;
+  hardware.uinput.enable = true;
+  
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.kernelPackages = pkgs-unstable.linuxPackages_latest;
   boot.initrd.kernelModules = [ "amdgpu" ];
   boot.kernelParams = [ 
     "video=DP-1:2560x1440@144"
@@ -20,12 +23,6 @@
     "amdgpu.vm_fragment_size=9"
     ];
   boot.kernelModules = [ "iwlwifi" ]; 
-  hardware.enableRedistributableFirmware = true;
-  hardware.uinput.enable = true;
-  hardware.graphics.enable = true; 
-  hardware.enableAllFirmware = true;
-  
-  # 4. Blacklist the old, conflicting AMD driver
   boot.blacklistedKernelModules = [ "radeon" ];
    
   # --- Networking ---
@@ -47,7 +44,9 @@
     videoDrivers = [ "amdgpu" ];
     displayManager.gdm.enable = true;
     desktopManager.gnome.enable = true;
-    xkb.layout = "us";
+    xkb {
+      layout = "us";
+      variant = "";
   };
   
   services.displayManager.autoLogin.enable = true;
