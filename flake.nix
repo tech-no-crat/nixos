@@ -34,6 +34,10 @@
         # Home Manager Module
         home-manager.nixosModules.home-manager
         {
+        # This is the most reliable way to pass 'allowUnfree' to Home Manager
+          home-manager.extraNixpkgsConfiguration = {
+            allowUnfree = true;
+          };
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
           
