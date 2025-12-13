@@ -13,8 +13,7 @@
   hardware.graphics.enable = true;
   hardware.enableRedistributableFirmware = true;
   hardware.uinput.enable = true;
-  boot.kernelPackages = pkgs-unstable.linuxPackagaes_latest;
-
+  
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.initrd.kernelModules = [ "amdgpu" ];
