@@ -54,6 +54,7 @@
 
   # --- Audio & Printing ---
   services.printing.enable = true;
+  services.printing.drivers = samsung-unified-linux-driver;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
@@ -72,6 +73,7 @@
   # --- System Packages ---
   # Only install tools needed by root or for debugging here
   environment.systemPackages = with pkgs; [
+    samsung-unified-linux-driver
     vim
     wget
   ];

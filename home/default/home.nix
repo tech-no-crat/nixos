@@ -27,6 +27,9 @@
     
     #Cloud Sync
     nextcloud-client
+    
+    #Printing
+
   ];
 
   # Example: Managing Git via Home Manager (Optional but cleaner)
