@@ -5,45 +5,65 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
-    # Add Home Manager
+    # Home Manager
     home-manager.url = "github:nix-community/home-manager/release-25.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+
+    # --- NEW: Hardware support for Surface devices ---
+    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
   };
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, ... }@inputs: 
+  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, nixos-hardware, ... }@inputs: 
   let
     system = "x86_64-linux";
     pkgs = nixpkgs.legacyPackages.${system};
     
-    # Define unstable pkgs here so it's available everywhere
+    # Define unstable pkgs
     pkgs-unstable = import nixpkgs-unstable {
       inherit system;
       config.allowUnfree = true;
     };
   in {
-    nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-      inherit system;
-      
-      # Pass inputs (like pkgs-unstable) to all modules
-      specialArgs = { inherit inputs pkgs-unstable; };
+    nixosConfigurations = {
+      # Your Desktop (Existing)
+      nixos = nixpkgs.lib.nixosSystem {
+        inherit system;
+        specialArgs = { inherit inputs pkgs-unstable; };
+        modules = [
+          ./hosts/default/configuration.nix
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.extraNixpkgsConfiguration = { allowUnfree = true; };
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.extraSpecialArgs = { inherit inputs pkgs-unstable; };
+            home-manager.users.shyam = import ./home/default/home.nix;
+          }
+        ];
+      };
 
-      modules = [
-        # Your System Config
-        ./hosts/default/configuration.nix
+      # --- NEW: Your Surface Laptop ---
+      surface-note-active = nixpkgs.lib.nixosSystem {
+        inherit system;
+        specialArgs = { inherit inputs pkgs-unstable; };
+        modules = [
+          # 1. Surface Hardware Module (Replaces <nixos-hardware/...>)
+          nixos-hardware.nixosModules.microsoft-surface-common
 
-        # Home Manager Module
-        home-manager.nixosModules.home-manager
-        {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          
-          # Pass arguments to Home Manager too
-          home-manager.extraSpecialArgs = { inherit inputs pkgs-unstable; };
-          
-          # Where your user config lives
-          home-manager.users.shyam = import ./home/default/home.nix;
-        }
-      ];
+          # 2. System Configuration
+          ./hosts/surface-note-active/configuration.nix
+
+          # 3. Home Manager
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.extraNixpkgsConfiguration = { allowUnfree = true; };
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.extraSpecialArgs = { inherit inputs pkgs-unstable; };
+            home-manager.users.shyam = import ./home/surface-note-active/home.nix;
+          }
+        ];
+      };
     };
   };
 }
