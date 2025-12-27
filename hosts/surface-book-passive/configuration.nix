@@ -9,7 +9,7 @@
   # --- Boot & Hardware ---
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  networking.hostName = "surface-note-active";
+  networking.hostName = "surface-book-passive";
   
   # --- Networking ---
   networking.networkmanager.enable = true;
@@ -41,6 +41,7 @@
   # --- Services ---
   services.printing.enable = true;
   services.tailscale.enable = true;
+  services.ssh.enable = true;
   
   # Docker (Virtualization)
   virtualisation.docker.enable = true;

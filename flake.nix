@@ -62,6 +62,26 @@
           }
         ];
       };
+      surface-book-passive = nixpkgs.lib.nixosSystem {
+        inherit system;
+        specialArgs = { inherit inputs pkgs-unstable; };
+        modules = [
+          # 1. Surface Hardware Module (Replaces <nixos-hardware/...>)
+          nixos-hardware.nixosModules.microsoft-surface-common
+
+          # 2. System Configuration
+          ./hosts/surface-book-passive/configuration.nix
+
+          # 3. Home Manager
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.extraSpecialArgs = { inherit inputs pkgs-unstable; };
+            home-manager.users.shyam = import ./home/surface-book-passive/home.nix;
+          }
+       ];
     };
   };
-}
+  };
+  }
