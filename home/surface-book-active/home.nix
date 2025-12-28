@@ -16,7 +16,7 @@
     # Development / Tools
     neovim
     nodejs_24
-    n8n
+    #n8n
     
     # CLI Tools
     _1password-cli 
