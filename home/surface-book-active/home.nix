@@ -5,17 +5,23 @@
   home.homeDirectory = "/home/shyam";
 
   # --- User Packages ---
-  home.packages = [
-    pkgs.nextcloud-client
-    pkgs.moonlight-qt
-    pkgs.obsidian
-    pkgs.neovim
-    pkgs.nodejs_24
-    pkgs._1password-cli
+  home.packages = with pkgs; [
+    # Communication / Sync
+    nextcloud-client
+    moonlight-qt
     
-    # Explicitly from unstable
-    pkgs-unstable.heroic
+    # Productivity
+    obsidian
+    
+    # Development / Tools
+    neovim
+    nodejs_24
+    #n8n
+    
+    # CLI Tools
+    _1password-cli 
   ];
+
   # Allow unfree packages (just in case)
   nixpkgs.config.allowUnfree = true;
 
