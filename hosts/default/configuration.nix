@@ -85,5 +85,6 @@
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nixpkgs.config.allowUnfree = true;
+  nix.settings.trusted-users = [ "root" "shyam"];
   system.stateVersion = "25.05";
 }
