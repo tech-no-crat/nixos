@@ -8,28 +8,19 @@
   nixpkgs.config.allowUnfree = true;
   
   # --- User Packages (The "Apps") ---
-  home.packages = with pkgs; [
-    # Communication & Social
-    discord
-    
-    # Productivity
-    obsidian
-    thunderbird
+home.packages = [
+    # --- STABLE PACKAGES (from pkgs) ---
+    pkgs.obsidian
+    pkgs.thunderbird
+    pkgs.git
+    pkgs.ethtool
+    pkgs.iw
+    pkgs.nextcloud-client
 
-    # Dev Tools
-    vscode
-    neovim
-    git
-    
-    # Utilities
-    ethtool
-    iw
-    
-    #Cloud Sync
-    nextcloud-client
-    
-    #Printing
-
+    # --- UNSTABLE PACKAGES (from pkgs-unstable) ---
+    pkgs-unstable.discord    # Discord often breaks on stable if not updated
+    pkgs-unstable.vscode     # Get the latest features/extensions
+    pkgs-unstable.neovim     # Often desired for latest plugins
   ];
 
   # Example: Managing Git via Home Manager (Optional but cleaner)
