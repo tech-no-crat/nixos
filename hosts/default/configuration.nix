@@ -11,6 +11,7 @@
 
   # --- Boot & Hardware ---
   hardware.graphics.enable = true;
+  hardware.graphics.enable32Bit = true;
   hardware.enableRedistributableFirmware = true;
   hardware.uinput.enable = true;
   
